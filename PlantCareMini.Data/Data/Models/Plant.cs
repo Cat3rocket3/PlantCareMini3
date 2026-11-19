@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlantCareMini.Data.Models
+namespace PlantCareMini.Data.Data.Models
 {
     public class Plant
     {
@@ -27,5 +27,7 @@ namespace PlantCareMini.Data.Models
 
         [Required]
         public string Description { get; set; } = string.Empty;
+        public List<Watering> Waterings { get; set; } = new();
+        public List<CareNote> CareNotes { get; set; } = new();
     }   
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PlantCareMini.Data.Models;
+using PlantCareMini.Data.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
