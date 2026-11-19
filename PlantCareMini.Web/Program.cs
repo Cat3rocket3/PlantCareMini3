@@ -1,7 +1,7 @@
-
 using Microsoft.EntityFrameworkCore;
 using PlantCareMini.Data;
-using PlantCareMini.Data.Data;
+using PlantCareMini.Services;
+using PlantCareMini.Services.Contracts;
 
 namespace PlantCareMini.Web
 {
@@ -11,30 +11,27 @@ namespace PlantCareMini.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddDbContext<PlantCareDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddControllersWithViews();
-
-            // Database connection
-            builder.Services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(
-                    @"Server=(localdb)\MSSQLLocalDB;Database=PlantCareMiniDb;Trusted_Connection=True;TrustServerCertificate=True;"));
+            builder.Services.AddScoped<IPlantService, PlantService>();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            else
+            {
+                using var scope = app.Services.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<PlantCareDbContext>();
+                DemoData.Seed(db);
+            }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
-            app.UseAuthorization();
-
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
